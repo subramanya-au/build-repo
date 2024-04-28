@@ -119,7 +119,7 @@ jobs:
         with:
           repository: subramanya-au/k8s-manifests
           ref: main
-          token: ${{ secrets.MY_PAT }}
+          token: ${{ secrets.github_pat }}
 
       - name: checking files
         run: |
@@ -134,7 +134,7 @@ jobs:
           argocd login --insecure ${{ secrets.argocd_server }} --username ${{ secrets.argocd_username }} --password ${{ secrets.argocd_password }} --grpc-web
 
           #Argocd repo add
-          argocd repo add https://github.com/subramanya-au/k8s-manifests.git --username ${{ secrets.git_username }} --password ${{ secrets.MY_PAT }} --insecure-skip-server-verification --grpc-web --upsert
+          argocd repo add https://github.com/subramanya-au/k8s-manifests.git --username ${{ secrets.git_username }} --password ${{ secrets.github_pat }} --insecure-skip-server-verification --grpc-web --upsert
       
           #Argocd app create
           argocd app create webapp -f webapp/environments/sandbox/application.yaml --upsert
