@@ -15,7 +15,10 @@ on:
       docker_password: 
         required: true
       github_pat:
-        required: true 
+        required: true
+    outputs:
+      docker_image:
+        value: ${{ jobs.docker-build.outputs.docker_image }}
 
 jobs:
   docker-build:
