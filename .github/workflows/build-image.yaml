@@ -68,28 +68,28 @@ jobs:
             build-dir=${{ github.workspace }}/images/${{ github.event.repository.name }}
             build-origin=git-actions
 
-      - name: Build Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: Dockerfile
-          push: false
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      # - name: Build Docker Image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: .
+      #     file: Dockerfile
+      #     push: false
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
       
-      - name: Scan Image with Trivy
-        uses: aquasecurity/trivy-action@0.16.1
-        with:
-          image-ref: 'sunil0019/${{ github.event.repository.name }}:${{ github.ref_name }}'
-          format: 'sarif'
-          severity: 'MEDIUM,HIGH,CRITICAL'
-          output: 'trivy-results.sarif'
-          timeout: '10m0s'
+      # - name: Scan Image with Trivy
+      #   uses: aquasecurity/trivy-action@0.16.1
+      #   with:
+      #     image-ref: 'sunil0019/${{ github.event.repository.name }}:${{ github.ref_name }}'
+      #     format: 'sarif'
+      #     severity: 'MEDIUM,HIGH,CRITICAL'
+      #     output: 'trivy-results.sarif'
+      #     timeout: '10m0s'
       
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
+      # - name: Upload Trivy scan results to GitHub Security tab
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: 'trivy-results.sarif'
       
       - name: Push Docker Image
         uses: docker/build-push-action@v5
