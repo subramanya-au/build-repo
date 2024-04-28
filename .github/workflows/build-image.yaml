@@ -102,12 +102,13 @@ jobs:
       
       - name: Set SHA Image for k8s Deployment Pinning
         id: image_sha
-        run: |
+        run: | 
           echo "docker_image=sunil0019/${{ github.event.repository.name }}:sha-${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
   
   Deployment: 
     name: Deploy-to-Dev
-    runs-on: web-app
+    # runs-on: web-app
+    runs-on: ubuntu-latest
     # environment: 
     #   name: dev
     needs:
@@ -129,17 +130,17 @@ jobs:
       - name: Check Image name 
         run: echo ${{ needs.docker-build.outputs.docker_image }}
       
-      - name: ArgoCD Deployment
-        run: |
-          #Argocd Login
-          argocd login --insecure ${{ secrets.argocd_server }} --username ${{ secrets.argocd_username }} --password ${{ secrets.argocd_password }} --grpc-web
+      # - name: ArgoCD Deployment
+      #   run: |
+      #     #Argocd Login
+      #     argocd login --insecure ${{ secrets.argocd_server }} --username ${{ secrets.argocd_username }} --password ${{ secrets.argocd_password }} --grpc-web
 
-          #Argocd repo add
-          argocd repo add https://github.com/subramanya-au/k8s-manifests.git --username ${{ secrets.git_username }} --password ${{ secrets.github_pat }} --insecure-skip-server-verification --grpc-web --upsert
+      #     #Argocd repo add
+      #     argocd repo add https://github.com/subramanya-au/k8s-manifests.git --username ${{ secrets.git_username }} --password ${{ secrets.github_pat }} --insecure-skip-server-verification --grpc-web --upsert
       
-          #Argocd app create
-          argocd app create webapp -f webapp/environments/sandbox/application.yaml --upsert
+      #     #Argocd app create
+      #     argocd app create webapp -f webapp/environments/sandbox/application.yaml --upsert
           
-          # #Set Image
-          argocd app set webapp --kustomize-image ${{ needs.docker-build.outputs.docker_image }}
+      #     # #Set Image
+      #     argocd app set webapp --kustomize-image ${{ needs.docker-build.outputs.docker_image }}
   
