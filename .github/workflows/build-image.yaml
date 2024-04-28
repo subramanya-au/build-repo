@@ -102,7 +102,8 @@ jobs:
       
       - name: Set SHA Image for k8s Deployment Pinning
         id: image_sha
-        run: echo "docker_image=sunil0019/${{ github.event.repository.name }}:sha-${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
+        run: |
+          echo "docker_image=$DOCKER_IMAGE >> $GITHUB_OUTPUT
   
   Deployment: 
     name: Deploy-to-Dev
