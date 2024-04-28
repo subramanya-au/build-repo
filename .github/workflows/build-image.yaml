@@ -17,7 +17,7 @@ on:
       github_pat:
         required: true
     outputs:
-      docker_image:
+      final_image:
         value: ${{ jobs.docker-build.outputs.docker_image }}
 
 jobs:
