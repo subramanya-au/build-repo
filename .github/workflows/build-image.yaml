@@ -68,28 +68,28 @@ jobs:
             build-dir=${{ github.workspace }}/images/${{ github.event.repository.name }}
             build-origin=git-actions
 
-      # - name: Build Docker Image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: .
-      #     file: Dockerfile
-      #     push: false
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
+      - name: Build Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
       
-      # - name: Scan Image with Trivy
-      #   uses: aquasecurity/trivy-action@0.16.1
-      #   with:
-      #     image-ref: 'sunil0019/${{ github.event.repository.name }}:${{ github.ref_name }}'
-      #     format: 'sarif'
-      #     severity: 'MEDIUM,HIGH,CRITICAL'
-      #     output: 'trivy-results.sarif'
-      #     timeout: '10m0s'
+      - name: Scan Image with Trivy
+        uses: aquasecurity/trivy-action@0.16.1
+        with:
+          image-ref: 'sunil0019/${{ github.event.repository.name }}:${{ github.ref_name }}'
+          format: 'sarif'
+          severity: 'MEDIUM,HIGH,CRITICAL'
+          output: 'trivy-results.sarif'
+          timeout: '10m0s'
       
-      # - name: Upload Trivy scan results to GitHub Security tab
-      #   uses: github/codeql-action/upload-sarif@v3
-      #   with:
-      #     sarif_file: 'trivy-results.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
       
       - name: Push Docker Image
         uses: docker/build-push-action@v5
@@ -104,43 +104,4 @@ jobs:
         id: image_sha
         run: | 
           echo "docker_image=sunil0019/${{ github.event.repository.name }}:sha-${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
-  
-  Deployment: 
-    name: Deploy-to-Dev
-    # runs-on: web-app
-    runs-on: ubuntu-latest
-    # environment: 
-    #   name: dev
-    needs:
-      - docker-build
-    timeout-minutes: 60
-    # if: ${{ github.ref == 'refs/heads/main' && inputs.environment == 'dev'}}
-    steps:
-      - name: Check out my other private repo
-        uses: actions/checkout@v4
-        with:
-          repository: subramanya-au/k8s-manifests
-          ref: main
-          token: ${{ secrets.github_pat }}
-
-      - name: checking files
-        run: |
-          ls -lart
-          
-      - name: Check Image name 
-        run: echo ${{ needs.docker-build.outputs.docker_image }}
-      
-      # - name: ArgoCD Deployment
-      #   run: |
-      #     #Argocd Login
-      #     argocd login --insecure ${{ secrets.argocd_server }} --username ${{ secrets.argocd_username }} --password ${{ secrets.argocd_password }} --grpc-web
-
-      #     #Argocd repo add
-      #     argocd repo add https://github.com/subramanya-au/k8s-manifests.git --username ${{ secrets.git_username }} --password ${{ secrets.github_pat }} --insecure-skip-server-verification --grpc-web --upsert
-      
-      #     #Argocd app create
-      #     argocd app create webapp -f webapp/environments/sandbox/application.yaml --upsert
-          
-      #     # #Set Image
-      #     argocd app set webapp --kustomize-image ${{ needs.docker-build.outputs.docker_image }}
   
